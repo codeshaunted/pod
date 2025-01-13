@@ -1,6 +1,6 @@
 use std::{
     fs::{self, File},
-    io::{Split, Write},
+    io::Write,
     path::Path,
 };
 

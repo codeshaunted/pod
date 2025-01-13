@@ -11,6 +11,7 @@ fn main() {
     let result = match args.command {
         Commands::Init(args) => args.execute(),
         Commands::Split(args) => args.execute(),
+        Commands::Gen(args) => args.execute(),
     };
 
     if let Err(err) = result {

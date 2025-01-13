@@ -4,15 +4,9 @@ use std::{
 };
 
 use clap::Args;
-use goblin::{
-    pe::{optional_header::StandardFields32, PE},
-    Object,
-};
+use goblin::pe::PE;
 
-use crate::{
-    config::{Config, Section},
-    util::{self},
-};
+use crate::config::{Config, Section};
 
 use super::CommandExecute;
 

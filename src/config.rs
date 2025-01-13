@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Unit {
-    
-}
+pub struct Unit {}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Section {
