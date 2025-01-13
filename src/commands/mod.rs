@@ -9,7 +9,7 @@ pub trait CommandExecute {
 
 #[derive(Debug, Parser)]
 #[command(name = "pod")]
-#[command(about = "a binary splitting and re-linking utility", long_about = None)]
+#[command(about = "a PE binary splitting and re-linking utility", long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Commands,
