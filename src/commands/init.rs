@@ -6,7 +6,7 @@ use std::{
 use clap::Args;
 use goblin::pe::PE;
 
-use crate::config::{Config, Section};
+use crate::config::{Config, Section, Unit};
 
 use super::CommandExecute;
 
@@ -31,16 +31,18 @@ impl CommandExecute for InitArgs {
                             Ok(Section {
                                 name: section
                                     .name()
-                                    .map_err(|err| {
-                                        format!("failed to get section name ({})", err)
-                                    })?
+                                    .map_err(|err| format!("failed to get section name ({})", err))?
                                     .to_string(),
                                 //addr_file: section.pointer_to_raw_data,
                                 //size_file: section.size_of_raw_data,
                                 //addr_virtual: section.virtual_address,
                                 //size_virtual: section.virtual_size,
                                 //flags: section.characteristics,
-                                units: None,
+                                units: vec![Unit {
+                                    kind: "copy".to_string(),
+                                    addr_virtual: section.virtual_address as usize,
+                                    raw_size: section.size_of_raw_data as usize,
+                                }],
                             })
                         })
                         .collect::<Result<Vec<Section>, String>>()?;
@@ -62,7 +64,10 @@ impl CommandExecute for InitArgs {
                     let mut cfg_file = File::create("pod.toml").unwrap();
                     cfg_file.write_all(toml_string.as_bytes()).unwrap();
 
-                    println!("initialized pod.toml for executable at `{}`", self.executable);
+                    println!(
+                        "initialized pod.toml for executable at `{}`",
+                        self.executable
+                    );
                     Ok(())
                 }
                 Err(err) => Err(format!("executable parsing failed ({})", err)),

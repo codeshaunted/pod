@@ -1,7 +1,11 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Unit {}
+pub struct Unit {
+    pub kind: String,
+    pub addr_virtual: usize,
+    pub raw_size: usize,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Section {
@@ -11,7 +15,7 @@ pub struct Section {
     //pub addr_virtual: u32,
     //pub size_virtual: u32,
     //pub flags: u32,
-    pub units: Option<Vec<Unit>>,
+    pub units: Vec<Unit>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
