@@ -18,6 +18,9 @@ pub struct Section {
 pub struct Config {
     pub executable: String,
     pub hash: String,
+    pub assembler_path: String,
+    pub compiler_path: String,
+    pub linker_path: String,
     //pub base_addr_virtual: u64,
     //pub entry: u32,
     //pub subsystem: u16,

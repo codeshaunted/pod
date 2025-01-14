@@ -12,10 +12,12 @@ fn main() {
         Commands::Init(args) => args.execute(),
         Commands::Split(args) => args.execute(),
         Commands::Gen(args) => args.execute(),
+        Commands::Link(args) => args.execute(),
+        Commands::Patch(args) => args.execute(),
     };
 
     if let Err(err) = result {
-        println!("error: {}", err);
+        eprintln!("error: {}", err);
         std::process::exit(1);
     }
 

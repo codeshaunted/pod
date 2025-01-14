@@ -1,8 +1,10 @@
 use clap::{Parser, Subcommand};
 
-pub mod init;
-pub mod split;
 pub mod gen;
+pub mod init;
+pub mod link;
+pub mod patch;
+pub mod split;
 pub trait CommandExecute {
     fn execute(&self) -> Result<(), String>;
 }
@@ -21,4 +23,6 @@ pub enum Commands {
     Init(init::InitArgs),
     Split(split::SplitArgs),
     Gen(gen::GenArgs),
+    Link(link::LinkArgs),
+    Patch(patch::PatchArgs),
 }
