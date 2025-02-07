@@ -13,7 +13,7 @@ fn main() {
         Commands::Split(args) => args.execute(),
         Commands::Gen(args) => args.execute(),
         Commands::Link(args) => args.execute(),
-        Commands::Patch(args) => args.execute(),
+        Commands::PatchExe(args) => args.execute(),
     };
 
     if let Err(err) = result {

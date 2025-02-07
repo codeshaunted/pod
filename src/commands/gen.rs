@@ -25,20 +25,76 @@ impl CommandExecute for GenArgs {
             let sec_name = sec
                 .name()
                 .map_err(|err| format!("failed to get section name ({})", err))?;
-            let asm_path = build_dir.join(sec_name.to_owned() + ".asm");
-            let asm_path_str = asm_path.to_str().unwrap();
 
-            let asm_command = Command::new(&config.assembler_path)
-                .arg(format!("/Fo{}", build_dir.join(sec_name.to_owned() + ".obj").to_str().unwrap()))
-                .arg("/c")
-                .arg(&asm_path)
-                .output()
-                .map_err(|err| format!("failed to execute assemble command ({})", err))?;
+            if let Some(cfg_sec) = config.sections.iter().find(|i_sec| i_sec.name == sec_name) {
+                let mut unit_i = 0;
+                for unit in cfg_sec.units.iter() {
+                    match unit.kind.as_str() {
+                        "copy" => {
+                            let asm_path =
+                                build_dir.join(format!("{}_copy_{}.asm", sec_name, unit_i));
 
-            if asm_command.status.success() {
-                println!("assembled `{}`", asm_path_str);
-            } else {
-                return Err(format!("assembly of `{}` failed ({})", asm_path_str, String::from_utf8_lossy(&asm_command.stdout)));
+                            let asm_command = Command::new(&config.assembler_path)
+                                .arg(format!(
+                                    "/Fo{}",
+                                    build_dir.join(format!("{}_copy_{}.obj", sec_name, unit_i)).display()
+                                ))
+                                .arg("/c")
+                                .arg(&asm_path)
+                                .output()
+                                .map_err(|err| {
+                                    format!("failed to execute copy asm command for section `{}`, unit `{}` ({})", sec_name, unit_i, err)
+                                })?;
+
+                            if asm_command.status.success() {
+                                println!("assembled copy unit for section `{}`, unit `{}`", sec_name, unit_i);
+                            } else {
+                                return Err(format!(
+                                    "copy assembly of section `{}`, unit `{}` failed ({})",
+                                    sec_name,
+                                    unit_i,
+                                    String::from_utf8_lossy(&asm_command.stdout)
+                                ));
+                            }
+                        },
+                        "asm" => {
+                            if let Some(asm_path) = &unit.file {
+                                let asm_command = Command::new(&config.assembler_path)
+                                .arg(format!(
+                                    "/Fo{}",
+                                    build_dir.join(format!("{}_asm_{}.obj", sec_name, unit_i)).display()
+                                ))
+                                .arg("/c")
+                                .arg(&asm_path)
+                                .output()
+                                .map_err(|err| {
+                                    format!("failed to execute asm command for section `{}`, unit `{}` ({})", sec_name, unit_i, err)
+                                })?;
+
+                                if asm_command.status.success() {
+                                    println!("assembled asm unit for section `{}`, unit `{}`", sec_name, unit_i);
+                                } else {
+                                    return Err(format!(
+                                        "assembly of section `{}`, unit `{}` failed ({})",
+                                        sec_name,
+                                        unit_i,
+                                        String::from_utf8_lossy(&asm_command.stdout)
+                                    ));
+                                }
+                            } else {
+                                return Err(format!("asm unit for section `{}`, unit `{}` is missing file path", sec_name, unit_i))
+                            }
+                        }
+                        _ => {
+                            return Err(format!(
+                                "section `{}`, unit `{}` has invalid kind `{}`",
+                                sec_name, unit_i, unit.kind
+                            ))
+                        }
+                    }
+
+                    unit_i += 1;
+                }
             }
         }
 

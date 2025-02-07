@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Unit {
     pub kind: String,
+    pub file: Option<String>,
     pub addr_virtual: usize,
     pub raw_size: usize,
 }

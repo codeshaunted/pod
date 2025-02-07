@@ -33,14 +33,10 @@ impl CommandExecute for InitArgs {
                                     .name()
                                     .map_err(|err| format!("failed to get section name ({})", err))?
                                     .to_string(),
-                                //addr_file: section.pointer_to_raw_data,
-                                //size_file: section.size_of_raw_data,
-                                //addr_virtual: section.virtual_address,
-                                //size_virtual: section.virtual_size,
-                                //flags: section.characteristics,
                                 units: vec![Unit {
                                     kind: "copy".to_string(),
-                                    addr_virtual: section.virtual_address as usize,
+                                    file: None,
+                                    addr_virtual: pe.image_base + section.virtual_address as usize,
                                     raw_size: section.size_of_raw_data as usize,
                                 }],
                             })
@@ -53,9 +49,6 @@ impl CommandExecute for InitArgs {
                         assembler_path: "ml".to_string(),
                         compiler_path: "cl".to_string(),
                         linker_path: "ld".to_string(),
-                        //base_addr_virtual: pe.header.optional_header.unwrap().windows_fields.image_base,
-                        //entry: StandardFields32::from(pe.header.optional_header.unwrap().standard_fields).address_of_entry_point,
-                        //subsystem: pe.header.optional_header.unwrap().windows_fields.subsystem,
                         sections: sections,
                     };
 

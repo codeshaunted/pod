@@ -11,9 +11,9 @@ use crate::util;
 use super::CommandExecute;
 
 #[derive(Debug, Args)]
-pub struct PatchArgs {}
+pub struct PatchExeArgs {}
 
-impl CommandExecute for PatchArgs {
+impl CommandExecute for PatchExeArgs {
     fn execute(&self) -> Result<(), String> {
         let config = util::get_config()?;
 
